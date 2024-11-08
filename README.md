@@ -13,14 +13,14 @@ refacgo <command> [options] <filepath>
 
 ## Commands
 Available commands:
-- `review`  - Evaluates the specified file only.
+- `eval`  - Evaluates the specified file only.
 - `refactor` - Evaluates and refactors the specified file.
 
-### `review`
+### `eval`
 ```
-$ refacgo review [option] <filepath>
+$ refacgo eval [option] <filepath>
 ```
-This command reviews the file specified as an argument (provide the relative path from the current directory). The default language is English, but you can use a flag to get a review in Japanese.
+This command evaluates the file specified as an argument (provide the relative path from the current directory). The default language is English, but you can use a flag to get a eval in Japanese.
 
 | Option        | Default | Description |
 |-------------|---------|-------------|
