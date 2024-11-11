@@ -1,22 +1,18 @@
 package evaluation
 
-import "github.com/kakky/refacgo/internal/application"
+import "context"
 
 type EvaluateByGemini struct {
-	// gemini APIインターフェース
-	gemini application.Gemini
+	// geminiクライアント
 }
 
-func NewEvaluation(gemini application.Gemini) *EvaluateByGemini {
+func NewEvaluateByGemini() *EvaluateByGemini {
 	return &EvaluateByGemini{
 		// gemini: gemini,
 	}
 }
 
-func (ev *EvaluateByGemini) Evaluate(filepath string) ([]byte, error) {
+// インターフェースを満たすメソッドを定義
+func (ev *EvaluateByGemini) Evaluate(ctx context.Context, src []byte) ([]byte, error) {
 	return nil, nil
-}
-
-func (ev *EvaluateByGemini) EvaluateInJapanese(filepath string) {
-
 }

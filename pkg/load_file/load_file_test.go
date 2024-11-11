@@ -29,7 +29,7 @@ func TestLoadFile(t *testing.T) {
 			if (err != nil) != tt.wantErr {
 				t.Errorf("utils.LoadFile() error = %v ,wantErr = %v", err, tt.wantErr)
 			}
-			if diff := cmp.Diff(got, tt.want); diff != "" {
+			if diff := cmp.Diff(tt.want, got); diff != "" {
 				t.Errorf("loadFile return byte mismatch(-want +got):\n%s", diff)
 			}
 		})

@@ -1,20 +1,24 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/kakky/refacgo/internal/application/evaluation"
+	"github.com/kakky/refacgo/internal/presenter"
+	loadfile "github.com/kakky/refacgo/pkg/load_file"
+
+	// loadfile "github.com/kakky/refacgo/pkg/load_file"
+
 	"github.com/urfave/cli/v2"
 )
 
 type evalCmd struct {
-	Evalueation *evaluation.Evaluation
-	// EvalPresenter *presenter.EvalPresenter
+	Evalueation   evaluation.Evaluate
+	EvalPresenter presenter.EvalPresenter
 }
 
-func newEvalCmd(evaluation *evaluation.Evaluation) *evalCmd {
+func newEvalCmd(evaluation evaluation.Evaluate, evalPresenter presenter.EvalPresenter) *evalCmd {
 	return &evalCmd{
-		Evalueation: evaluation,
+		Evalueation:   evaluation,
+		EvalPresenter: evalPresenter,
 	}
 }
 
@@ -39,9 +43,22 @@ func (cmd *evalCmd) add() *cli.Command {
 				Usage:   "description of code in the specified file",
 			},
 		},
-		Action: func(ctx *cli.Context) error {
-			fmt.Println("Evaluate your code !!")
-			return nil
-		},
+		Action: cmd.run,
 	}
+}
+
+func (cmd *evalCmd) run(cCtx *cli.Context) error {
+	// 引数のファイルを読み込んで、バイトスライスを格納
+	src, err := loadfile.LoadFile(cCtx.Args().Get(0))
+	if err != nil {
+		return err
+	}
+	evalb, err := cmd.Evalueation.Evaluate(cCtx.Context, src)
+	if err != nil {
+		return err
+	}
+	if err := cmd.EvalPresenter.EvalPrint(cCtx.Context, evalb); err != nil {
+		return err
+	}
+	return nil
 }

@@ -1,4 +1,4 @@
-package utils
+package loadfile
 
 import (
 	"bufio"
@@ -13,8 +13,9 @@ func LoadFile(filepath string) ([]byte, error) {
 		log.Fatal(err)
 	}
 	defer f.Close()
+	// バッファを持った空のバイト配列
 	var buf bytes.Buffer
-	// ファイルを読み込む
+	// 行単位でファイルを読み込む
 	scannar := bufio.NewScanner(f)
 	// 一行ごとにループ
 	for scannar.Scan() {

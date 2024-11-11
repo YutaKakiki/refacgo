@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/kakky/refacgo/internal/application/evaluation"
+	"github.com/kakky/refacgo/internal/presenter"
 	"github.com/urfave/cli/v2"
 )
 
@@ -13,7 +14,7 @@ const (
 )
 
 func Execute(ctx context.Context) error {
-	evalCmd := newEvalCmd(evaluation.NewEvaluation())
+	evalCmd := newEvalCmd(evaluation.NewEvaluateByGemini(), presenter.NewEvalPrinter())
 	// refactorCmd:=newRefactorCmd(refactoring.NewRefactoring())
 	app := &cli.App{
 		Name:        "refacgo",
@@ -24,7 +25,7 @@ func Execute(ctx context.Context) error {
 			// refactorCmd.add()
 		},
 	}
-	if err := app.RunContext(context.Background(), os.Args); err != nil {
+	if err := app.RunContext(ctx, os.Args); err != nil {
 		return err
 	}
 	return nil
