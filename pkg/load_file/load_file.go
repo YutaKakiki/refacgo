@@ -8,7 +8,6 @@ import (
 )
 
 func LoadFile(filepath string) ([]byte, error) {
-	// geminiの送信MAXの容量がわからんのでまた後々。
 	f, err := os.Open(filepath)
 	if err != nil {
 		log.Fatal(err)
