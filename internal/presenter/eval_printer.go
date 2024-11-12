@@ -12,6 +12,6 @@ func NewEvalPrinter() *EvalPrinter {
 	return &EvalPrinter{}
 }
 
-func (ep *EvalPrinter) EvalPrint(ctx context.Context, evalb []byte) error {
+func (ep *EvalPrinter) EvalPrint(ctx context.Context, eval string) error {
 	return nil
 }

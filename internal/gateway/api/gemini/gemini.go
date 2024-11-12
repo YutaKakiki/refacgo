@@ -19,7 +19,7 @@ type GeminiClient struct {
 	model        *genai.GenerativeModel
 }
 
-func NewGeminiClient(geminiConfig config.GeminiConfig, ctx context.Context) *GeminiClient {
+func NewGemini(geminiConfig config.GeminiConfig, ctx context.Context) *GeminiClient {
 	client, err := genai.NewClient(ctx)
 	model := client.GenerativeModel(geminiModel)
 	if err != nil {
@@ -32,7 +32,7 @@ func NewGeminiClient(geminiConfig config.GeminiConfig, ctx context.Context) *Gem
 	}
 }
 
-func (gc *GeminiClient) GenerateText(ctx context.Context, src []byte, prompt string) (string, error) {
+func (gc *GeminiClient) Query(ctx context.Context, src []byte, prompt string) (string, error) {
 	// client&modelが何らかの理由でnilの場合は早期リターン
 	if gc.client == nil || gc.model == nil {
 		return "", errors.New("connection to gemini failed")
