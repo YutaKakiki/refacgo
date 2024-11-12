@@ -1,6 +1,9 @@
 package config
 
-import "github.com/caarlos0/env/v11"
+import (
+	"github.com/caarlos0/env/v11"
+	"github.com/joho/godotenv"
+)
 
 type Config struct {
 	GeminiConfig GeminiConfig
@@ -11,6 +14,7 @@ type GeminiConfig struct {
 }
 
 func New() (*Config, error) {
+	godotenv.Load()
 	cfg := &Config{}
 	if err := env.Parse(cfg); err != nil {
 		return nil, err

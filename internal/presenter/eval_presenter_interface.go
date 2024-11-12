@@ -3,5 +3,5 @@ package presenter
 import "context"
 
 type EvalPresenter interface {
-	EvalPrint(ctx context.Context, eval string) error
+	EvalPrint(ctx context.Context, text string) error
 }

@@ -1,6 +1,9 @@
 package eval
 
 import (
+	"errors"
+
+	"github.com/kakky/refacgo/cmd/utils"
 	"github.com/kakky/refacgo/internal/application/evaluation"
 	"github.com/kakky/refacgo/internal/config"
 	"github.com/kakky/refacgo/internal/gateway/api/gemini"
@@ -45,6 +48,9 @@ func initEvalCmdAction(cCtx *cli.Context, cfg *config.Config) *evalCmdAction {
 }
 
 func (eca *evalCmdAction) run(cCtx *cli.Context) error {
+	if cCtx.NArg() != 1 {
+		return errors.New("Only one argument, the filename, is required")
+	}
 	// ファイル名（パス）を引数から取得
 	filename := cCtx.Args().Get(0)
 	// 引数のファイルを読み込んで、バイトスライスを格納
@@ -52,13 +58,18 @@ func (eca *evalCmdAction) run(cCtx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	// 読み取ったソースファイルを評価する
-	eval, err := eca.Evalueation.Evaluate(cCtx.Context, src, filename)
+	// descフラグから文字列を取得し、ソースに追加
+	desc := cCtx.String("description")
+	// フラグから""が帰ってきた時はそのままソースはそのまま返る
+	src = utils.AddDescToSrc(src, desc)
+
+	// 評価する
+	text, err := eca.Evalueation.Evaluate(cCtx.Context, src, filename)
 	if err != nil {
 		return err
 	}
 	// 評価コメントをプレゼンターに渡して出力
-	if err := eca.EvalPresenter.EvalPrint(cCtx.Context, eval); err != nil {
+	if err := eca.EvalPresenter.EvalPrint(cCtx.Context, text); err != nil {
 		return err
 	}
 	return nil

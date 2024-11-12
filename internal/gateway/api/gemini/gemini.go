@@ -7,32 +7,33 @@ import (
 
 	"github.com/google/generative-ai-go/genai"
 	"github.com/kakky/refacgo/internal/config"
+	"google.golang.org/api/option"
 )
 
 const (
 	geminiModel = "gemini-1.5-flash"
 )
 
-type GeminiClient struct {
+type Gemini struct {
 	geminiConfig config.GeminiConfig
 	client       *genai.Client
 	model        *genai.GenerativeModel
 }
 
-func NewGemini(geminiConfig config.GeminiConfig, ctx context.Context) *GeminiClient {
-	client, err := genai.NewClient(ctx)
+func NewGemini(geminiConfig config.GeminiConfig, ctx context.Context) *Gemini {
+	client, err := genai.NewClient(ctx, option.WithAPIKey(geminiConfig.API_KEY))
 	model := client.GenerativeModel(geminiModel)
 	if err != nil {
 		log.Fatal(err)
 	}
-	return &GeminiClient{
+	return &Gemini{
 		geminiConfig: geminiConfig,
 		client:       client,
 		model:        model,
 	}
 }
 
-func (gc *GeminiClient) Query(ctx context.Context, src []byte, prompt string) (string, error) {
+func (gc *Gemini) Query(ctx context.Context, src []byte, prompt string) (string, error) {
 	// client&modelが何らかの理由でnilの場合は早期リターン
 	if gc.client == nil || gc.model == nil {
 		return "", errors.New("connection to gemini failed")

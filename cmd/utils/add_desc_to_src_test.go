@@ -25,6 +25,14 @@ func TestAddDescToSrc(t *testing.T) {
 			},
 			want: []byte("This is description for the source. :\n\n\nThis is source."),
 		},
+		{
+			name: "説明文が空の場合はそのままソースを返す",
+			args: args{
+				src:  []byte("This is source."),
+				desc: "",
+			},
+			want: []byte("This is source."),
+		},
 	}
 	for _, tt := range tests {
 		tt := tt
