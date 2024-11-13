@@ -1,6 +1,7 @@
 package eval
 
 import (
+	"context"
 	"errors"
 
 	"github.com/kakky/refacgo/cmd/utils"
@@ -14,10 +15,10 @@ import (
 
 type evalCmdAction struct {
 	Evalueation   evaluation.Evaluation
-	EvalPresenter presenter.EvalPresenter
+	EvalPresenter evaluation.EvalPresenter
 }
 
-func newEvalCmdAction(evaluation evaluation.Evaluation, evalPresenter presenter.EvalPresenter) *evalCmdAction {
+func newEvalCmdAction(evaluation evaluation.Evaluation, evalPresenter evaluation.EvalPresenter) *evalCmdAction {
 	return &evalCmdAction{
 		Evalueation:   evaluation,
 		EvalPresenter: evalPresenter,
@@ -47,9 +48,9 @@ func initEvalCmdAction(cCtx *cli.Context, cfg *config.Config) *evalCmdAction {
 	return evalCmdAction
 }
 
-func (eca *evalCmdAction) run(cCtx *cli.Context) error {
+func (eca *evalCmdAction) run(cCtx *cli.Context, ctx context.Context) error {
 	if cCtx.NArg() != 1 {
-		return errors.New("Only one argument, the filename, is required")
+		return errors.New("only one argument, the filename, is required")
 	}
 	// ファイル名（パス）を引数から取得
 	filename := cCtx.Args().Get(0)
@@ -62,14 +63,16 @@ func (eca *evalCmdAction) run(cCtx *cli.Context) error {
 	desc := cCtx.String("description")
 	// フラグから""が帰ってきた時はそのままソースはそのまま返る
 	src = utils.AddDescToSrc(src, desc)
-
-	// 評価する
-	text, err := eca.Evalueation.Evaluate(cCtx.Context, src, filename)
+	// Evaluateの結果をモジュール間で逐次出力するためのチャネル
+	ch := make(chan string)
+	// ビジネスロジック
+	// 結果をストリームでチャネルに送信する
+	err = eca.Evalueation.Evaluate(ctx, src, filename, ch)
 	if err != nil {
 		return err
 	}
-	// 評価コメントをプレゼンターに渡して出力
-	if err := eca.EvalPresenter.EvalPrint(cCtx.Context, text); err != nil {
+	// チャネルからストリームで受信する
+	if err := eca.EvalPresenter.EvalPrint(ctx, ch); err != nil {
 		return err
 	}
 	return nil

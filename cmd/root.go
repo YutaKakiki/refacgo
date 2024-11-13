@@ -19,7 +19,7 @@ func Execute(ctx context.Context, cfg *config.Config) error {
 		Version:     version,
 		Description: "A Go-based command-line tool that evaluates the code in a specified Go file and provides refactoring suggestions powered by AI",
 		Commands: []*cli.Command{
-			eval.EvalCmd(cfg),
+			eval.EvalCmd(cfg, ctx),
 		},
 	}
 	if err := app.RunContext(ctx, os.Args); err != nil {
