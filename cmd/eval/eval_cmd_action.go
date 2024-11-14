@@ -55,7 +55,7 @@ func (eca *evalCmdAction) run(cCtx *cli.Context, ctx context.Context) error {
 	// ファイル名（パス）を引数から取得
 	filename := cCtx.Args().Get(0)
 	// 引数のファイルを読み込んで、バイトスライスを格納
-	src, err := loadfile.LoadFile(filename)
+	src, err := loadfile.LoadExternal(filename)
 	if err != nil {
 		return err
 	}

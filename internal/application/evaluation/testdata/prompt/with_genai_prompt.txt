@@ -1,3 +1,5 @@
+The name of this file is "test.go".
+
 Evaluate the following code
 The evaluation criteria are as follows.
 
@@ -45,3 +47,5 @@ Please also give us any advice or comments on the code to further improve it.
 Please note that the code should not be used to give advice, etc.
 Also, this will be output to the terminal, so ,to make it a little easier to read, please use pictograms.
 For ease of viewing, please leave a space between each item in the evaluation.
+
+
