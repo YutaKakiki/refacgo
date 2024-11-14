@@ -19,17 +19,21 @@ func NewEvaluationWithGenAiInJap(genAI application.GenAI) *EvaluationWithGenAiIn
 	}
 }
 
-// インターフェースを満たすメソッドを定義
 func (ev *EvaluationWithGenAiInJap) Evaluate(ctx context.Context, src []byte, filename string, ch chan<- string) error {
-	path := filepath.Join("internal", "application", "evaluation", "genai_instruction_in_jap.txt")
+	path := filepath.Join("internal", "application", "evaluation", "instruction_text", "genai_instruction_in_jap.txt")
 	instruction, err := loadfile.LoadFile(path)
 	if err != nil {
 		panic(err)
 	}
 	prompt := fmt.Sprintf("このファイルの名前は%qです。\n\n%v\n\n", filename, string(instruction))
-	err = ev.genAI.Query(ctx, src, prompt, ch)
-	if err != nil {
-		return err
-	}
+
+	go func() error {
+		err = ev.genAI.Query(ctx, src, prompt, ch)
+		if err != nil {
+			return err
+		}
+		return nil
+	}()
 	return nil
+
 }

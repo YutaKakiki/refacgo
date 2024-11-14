@@ -52,35 +52,31 @@ func (gc *Gemini) Query(ctx context.Context, src []byte, prompt string, ch chan<
 	promptText := genai.Text(prompt)
 	// ストリーミングで逐次的に文字列を受け取れるようにする
 	iter := gc.model.GenerateContentStream(ctx, code, promptText)
-	//レスポンス文字列を送信するチャネル
-	go func() error {
-		defer close(ch)
-
-		for {
-			// ストリーミング
-			resp, err := iter.Next()
-			if err == iterator.Done {
-				break
+	// 送信チャネルをクローズ
+	defer close(ch)
+	for {
+		// ストリーミング
+		resp, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return err
+		}
+		// レスポンスを文字列にキャストしてチャネルに送信
+		for _, cand := range resp.Candidates {
+			if cand.Content == nil {
+				continue
 			}
-			if err != nil {
-				return err
-			}
-			// レスポンスを文字列にキャストしてチャネルに送信
-			for _, cand := range resp.Candidates {
-				if cand.Content == nil {
-					continue
-				}
-				for _, part := range cand.Content.Parts {
-					// Text型の場合のみレスポンス文字列に格納する
-					switch p := part.(type) {
-					case genai.Text:
-						ch <- string(p)
-					}
+			for _, part := range cand.Content.Parts {
+				// Text型の場合のみレスポンス文字列に格納する
+				switch p := part.(type) {
+				case genai.Text:
+					ch <- string(p)
 				}
 			}
 		}
-		return nil
-	}()
+	}
 
 	return nil
 }
