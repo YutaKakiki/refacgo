@@ -40,16 +40,16 @@ func (m *MockGenAI) EXPECT() *MockGenAIMockRecorder {
 	return m.recorder
 }
 
-// Query mocks base method.
-func (m *MockGenAI) Query(ctx context.Context, src []byte, prompt string, ch chan<- string) error {
+// StreamQueryResults mocks base method.
+func (m *MockGenAI) StreamQueryResults(ctx context.Context, src []byte, prompt string, ch chan<- string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Query", ctx, src, prompt, ch)
+	ret := m.ctrl.Call(m, "StreamQueryResults", ctx, src, prompt, ch)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// Query indicates an expected call of Query.
-func (mr *MockGenAIMockRecorder) Query(ctx, src, prompt, ch any) *gomock.Call {
+// StreamQueryResults indicates an expected call of StreamQueryResults.
+func (mr *MockGenAIMockRecorder) StreamQueryResults(ctx, src, prompt, ch any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Query", reflect.TypeOf((*MockGenAI)(nil).Query), ctx, src, prompt, ch)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StreamQueryResults", reflect.TypeOf((*MockGenAI)(nil).StreamQueryResults), ctx, src, prompt, ch)
 }

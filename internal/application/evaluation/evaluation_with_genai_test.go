@@ -29,7 +29,7 @@ func TestEvauationWithGenAI(t *testing.T) {
 		{
 			name: "GenAIにソースコード・プロンプトを正常に渡し、非同期的にチャネルに文字列を送信できる",
 			mockFunc: func() {
-				mockGenAI.EXPECT().Query(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Do(
+				mockGenAI.EXPECT().StreamQueryResults(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Do(
 					func(ctx context.Context, src []byte, prompt string, ch chan<- string) {
 						// 正確にプロンプト・ソースコードをQueryに渡しているか
 						expectedPrompt, err := loadfile.LoadInternal("./testdata/prompt/with_genai_prompt.txt")

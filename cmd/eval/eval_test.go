@@ -35,7 +35,7 @@ func TestEvalCmd(t *testing.T) {
 			name: "フラグなしでコマンドを叩くと評価コメントが返る",
 			args: []string{"refacgo", "eval", "./testdata/src/sample.txt"},
 			mockFunc: func() {
-				mockGenAI.EXPECT().Query(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Do(
+				mockGenAI.EXPECT().StreamQueryResults(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Do(
 					func(ctx context.Context, src []byte, prompt string, ch chan<- string) {
 						// 正確にプロンプト・ソースコードをQueryに渡しているか
 						expectedPrompt, err := loadfile.LoadInternal("./testdata/prompt/eval/with_genai_prompt.txt")
@@ -70,7 +70,7 @@ func TestEvalCmd(t *testing.T) {
 			name: "-jフラグをつけてコマンドを叩くと日本語による評価コメントが返る",
 			args: []string{"refacgo", "eval", "-j", "./testdata/src/sample.txt"},
 			mockFunc: func() {
-				mockGenAI.EXPECT().Query(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Do(
+				mockGenAI.EXPECT().StreamQueryResults(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Do(
 					func(ctx context.Context, src []byte, prompt string, ch chan<- string) {
 						// 正確にプロンプト・ソースコードをQueryに渡しているか
 						expectedPrompt, err := loadfile.LoadInternal("./testdata/prompt/eval/with_genai_in_jap_prompt.txt")
@@ -105,7 +105,7 @@ func TestEvalCmd(t *testing.T) {
 			name: "-jフラグをつけ、-descフラグをつけてコマンドを叩くと日本語による評価コメントが返り、ソースコードに説明が追加される",
 			args: []string{"refacgo", "eval", "-j", "-desc", "これはテストで用いるためのものです。", "./testdata/src/sample.txt"},
 			mockFunc: func() {
-				mockGenAI.EXPECT().Query(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Do(
+				mockGenAI.EXPECT().StreamQueryResults(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Do(
 					func(ctx context.Context, src []byte, prompt string, ch chan<- string) {
 						// 正確にプロンプト・ソースコードをQueryに渡しているか
 						expectedPrompt, err := loadfile.LoadInternal("./testdata/prompt/eval/with_genai_in_jap_prompt.txt")

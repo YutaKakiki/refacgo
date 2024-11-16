@@ -33,7 +33,7 @@ func NewGemini(geminiConfig config.GeminiConfig, ctx context.Context) *Gemini {
 		model:        model,
 	}
 }
-func (gc *Gemini) Query(ctx context.Context, src []byte, prompt string, ch chan<- string) error {
+func (gc *Gemini) StreamQueryResults(ctx context.Context, src []byte, prompt string, ch chan<- string) error {
 	// client & modelが何らかの理由でnilの場合は早期リターン
 	if gc.client == nil || gc.model == nil {
 		return errors.New("connection to Gemini failed")

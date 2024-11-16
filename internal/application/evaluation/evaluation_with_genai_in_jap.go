@@ -26,7 +26,7 @@ func (ev *EvaluationWithGenAiInJap) Evaluate(ctx context.Context, src []byte, fi
 	prompt := fmt.Sprintf("このファイルの名前は%qです。\n\n%v\n\n", filename, string(instruction))
 
 	go func() error {
-		err = ev.genAI.Query(ctx, src, prompt, ch)
+		err = ev.genAI.StreamQueryResults(ctx, src, prompt, ch)
 		if err != nil {
 			return err
 		}
