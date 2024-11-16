@@ -7,17 +7,17 @@ import (
 	"github.com/kakky/refacgo/internal/presenter/indicater"
 )
 
-type EvalPrinter struct {
+type EvalConsolePrinter struct {
 	indicater *indicater.Indicater
 }
 
-func NewEvalPrinter() *EvalPrinter {
-	return &EvalPrinter{
+func NewEvalConsolePrinter() *EvalConsolePrinter {
+	return &EvalConsolePrinter{
 		indicater: indicater.NewIndicater(),
 	}
 }
 
-func (ep *EvalPrinter) EvalPrint(ctx context.Context, ch <-chan string) error {
+func (ep *EvalConsolePrinter) Print(ctx context.Context, ch <-chan string) error {
 	is := ep.indicater.Spinner
 	is.Suffix = "  Waiting for evaluating..."
 	is.Start()
