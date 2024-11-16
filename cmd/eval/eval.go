@@ -9,7 +9,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func EvalCmd(ctx context.Context, genAI application.GenAI, evalPresenter evaluation.EvalPresenter) *cli.Command {
+func EvalCmd(ctx context.Context, genAI application.GenAI, evalPresenter evaluation.EvalPrinter) *cli.Command {
 	return &cli.Command{
 		Name:        "evaluate",
 		Aliases:     []string{"eval"},

@@ -17,7 +17,7 @@ func TestEvalCmd(t *testing.T) {
 
 	ctrl := gomock.NewController(t)
 	mockGenAI := application.NewMockGenAI(ctrl)
-	mockEvalPresenter := evaluation.NewMockEvalPresenter(ctrl)
+	mockEvalPrinter := evaluation.NewMockEvalPrinter(ctrl)
 	srcArg := []byte("This is sample code.\n")
 	respString := []string{"This is comments of evalutated code!!!", "This is response from Mock!!!"}
 	respStringInJap := []string{"とてもいいコードです！！", "とてもいいテストコードです！！"}
@@ -55,7 +55,7 @@ func TestEvalCmd(t *testing.T) {
 						defer close(ch)
 					},
 				)
-				mockEvalPresenter.EXPECT().EvalPrint(gomock.Any(), gomock.Any()).Do(
+				mockEvalPrinter.EXPECT().Print(gomock.Any(), gomock.Any()).Do(
 					func(ctx context.Context, ch <-chan string) {
 						for text := range ch {
 							got = append(got, text)
@@ -90,7 +90,7 @@ func TestEvalCmd(t *testing.T) {
 						}
 					},
 				)
-				mockEvalPresenter.EXPECT().EvalPrint(gomock.Any(), gomock.Any()).Do(
+				mockEvalPrinter.EXPECT().Print(gomock.Any(), gomock.Any()).Do(
 					func(ctx context.Context, ch <-chan string) {
 						for text := range ch {
 							got = append(got, text)
@@ -125,7 +125,7 @@ func TestEvalCmd(t *testing.T) {
 						}
 					},
 				)
-				mockEvalPresenter.EXPECT().EvalPrint(gomock.Any(), gomock.Any()).Do(
+				mockEvalPrinter.EXPECT().Print(gomock.Any(), gomock.Any()).Do(
 					func(ctx context.Context, ch <-chan string) {
 						for text := range ch {
 							got = append(got, text)
@@ -149,7 +149,7 @@ func TestEvalCmd(t *testing.T) {
 				Name:        "refacgo",
 				Description: "A Go-based command-line tool that evaluates the code in a specified Go file and provides refactoring suggestions powered by AI",
 				Commands: []*cli.Command{
-					EvalCmd(ctx, mockGenAI, mockEvalPresenter),
+					EvalCmd(ctx, mockGenAI, mockEvalPrinter),
 				},
 			}
 			if err := app.RunContext(ctx, tt.args); err != nil {

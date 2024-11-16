@@ -14,10 +14,11 @@ import (
 
 type evalCmdAction struct {
 	Evalueation   evaluation.Evaluation
-	EvalPresenter evaluation.EvalPresenter
+	EvalPresenter evaluation.EvalPrinter
 }
 
-func newEvalCmdAction(evaluation evaluation.Evaluation, evalPresenter evaluation.EvalPresenter) *evalCmdAction {
+// cmdActionコンストラクタ
+func newEvalCmdAction(evaluation evaluation.Evaluation, evalPresenter evaluation.EvalPrinter) *evalCmdAction {
 	return &evalCmdAction{
 		Evalueation:   evaluation,
 		EvalPresenter: evalPresenter,
@@ -27,7 +28,7 @@ func newEvalCmdAction(evaluation evaluation.Evaluation, evalPresenter evaluation
 // コマンドアクションを初期化する
 // japaneseフラグがあれば、日本語対応のEvaluationをDIする
 // エントリポイントで初期化したgenAI,evalPresenterもここでDIする
-func initEvalCmdAction(cCtx *cli.Context, genAI application.GenAI, evalPresenter evaluation.EvalPresenter) *evalCmdAction {
+func initEvalCmdAction(cCtx *cli.Context, genAI application.GenAI, evalPresenter evaluation.EvalPrinter) *evalCmdAction {
 	var evalCmdAction *evalCmdAction
 
 	if cCtx.Bool("japanese") {
@@ -75,7 +76,7 @@ func (eca *evalCmdAction) run(cCtx *cli.Context, ctx context.Context) error {
 		return err
 	}
 	// チャネルからストリームで受信する
-	eca.EvalPresenter.EvalPrint(ctx, ch)
+	eca.EvalPresenter.Print(ctx, ch)
 
 	return nil
 }
