@@ -3,12 +3,11 @@ package eval
 import (
 	"context"
 	"errors"
+	"strings"
 
 	"github.com/kakky/refacgo/cmd/utils"
+	"github.com/kakky/refacgo/internal/application"
 	"github.com/kakky/refacgo/internal/application/evaluation"
-	"github.com/kakky/refacgo/internal/config"
-	"github.com/kakky/refacgo/internal/gateway/api/gemini"
-	"github.com/kakky/refacgo/internal/presenter"
 	loadfile "github.com/kakky/refacgo/pkg/load_file"
 	"github.com/urfave/cli/v2"
 )
@@ -27,22 +26,23 @@ func newEvalCmdAction(evaluation evaluation.Evaluation, evalPresenter evaluation
 
 // コマンドアクションを初期化する
 // japaneseフラグがあれば、日本語対応のEvaluationをDIする
-func initEvalCmdAction(cCtx *cli.Context, cfg *config.Config) *evalCmdAction {
+// エントリポイントで初期化したgenAI,evalPresenterもここでDIする
+func initEvalCmdAction(cCtx *cli.Context, genAI application.GenAI, evalPresenter evaluation.EvalPresenter) *evalCmdAction {
 	var evalCmdAction *evalCmdAction
 
 	if cCtx.Bool("japanese") {
 		evalCmdAction = newEvalCmdAction(
 			evaluation.NewEvaluationWithGenAiInJap(
-				gemini.NewGemini(cfg.GeminiConfig, cCtx.Context),
+				genAI,
 			),
-			presenter.NewEvalPrinter(),
+			evalPresenter,
 		)
 	} else {
 		evalCmdAction = newEvalCmdAction(
 			evaluation.NewEvaluationWithGenAI(
-				gemini.NewGemini(cfg.GeminiConfig, cCtx.Context),
+				genAI,
 			),
-			presenter.NewEvalPrinter(),
+			evalPresenter,
 		)
 	}
 	return evalCmdAction
@@ -54,6 +54,9 @@ func (eca *evalCmdAction) run(cCtx *cli.Context, ctx context.Context) error {
 	}
 	// ファイル名（パス）を引数から取得
 	filename := cCtx.Args().Get(0)
+	if strings.HasPrefix(filename, `"`) || strings.HasSuffix(filename, `'`) {
+		filename = filename[1 : len(filename)-1]
+	}
 	// 引数のファイルを読み込んで、バイトスライスを格納
 	src, err := loadfile.LoadExternal(filename)
 	if err != nil {
@@ -72,8 +75,7 @@ func (eca *evalCmdAction) run(cCtx *cli.Context, ctx context.Context) error {
 		return err
 	}
 	// チャネルからストリームで受信する
-	if err := eca.EvalPresenter.EvalPrint(ctx, ch); err != nil {
-		return err
-	}
+	eca.EvalPresenter.EvalPrint(ctx, ch)
+
 	return nil
 }

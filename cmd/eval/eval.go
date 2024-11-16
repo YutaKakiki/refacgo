@@ -3,12 +3,13 @@ package eval
 import (
 	"context"
 
-	"github.com/kakky/refacgo/internal/config"
+	"github.com/kakky/refacgo/internal/application"
+	"github.com/kakky/refacgo/internal/application/evaluation"
 
 	"github.com/urfave/cli/v2"
 )
 
-func EvalCmd(cfg *config.Config, ctx context.Context) *cli.Command {
+func EvalCmd(ctx context.Context, genAI application.GenAI, evalPresenter evaluation.EvalPresenter) *cli.Command {
 	return &cli.Command{
 		Name:        "evaluate",
 		Aliases:     []string{"eval"},
@@ -30,7 +31,7 @@ func EvalCmd(cfg *config.Config, ctx context.Context) *cli.Command {
 			},
 		},
 		Action: func(cCtx *cli.Context) error {
-			evalCmdAction := initEvalCmdAction(cCtx, cfg)
+			evalCmdAction := initEvalCmdAction(cCtx, genAI, evalPresenter)
 			if err := evalCmdAction.run(cCtx, ctx); err != nil {
 				return err
 			}

@@ -24,7 +24,6 @@ func TestEvauationWithGenAI(t *testing.T) {
 		name     string
 		mockFunc func()
 		args     args
-		wantErr  bool
 		want     string
 	}{
 		{
