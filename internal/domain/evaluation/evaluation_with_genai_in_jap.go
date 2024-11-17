@@ -4,15 +4,15 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/kakky/refacgo/internal/application"
+	"github.com/kakky/refacgo/internal/domain"
 	loadfile "github.com/kakky/refacgo/pkg/load_file"
 )
 
 type EvaluationWithGenAiInJap struct {
-	genAI application.GenAI
+	genAI domain.GenAI
 }
 
-func NewEvaluationWithGenAiInJap(genAI application.GenAI) *EvaluationWithGenAiInJap {
+func NewEvaluationWithGenAiInJap(genAI domain.GenAI) *EvaluationWithGenAiInJap {
 	return &EvaluationWithGenAiInJap{
 		genAI: genAI,
 	}

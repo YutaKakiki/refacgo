@@ -4,15 +4,15 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/kakky/refacgo/internal/application"
+	"github.com/kakky/refacgo/internal/domain"
 	loadfile "github.com/kakky/refacgo/pkg/load_file"
 )
 
 type EvaluationWithGenAI struct {
-	genAI application.GenAI
+	genAI domain.GenAI
 }
 
-func NewEvaluationWithGenAI(genAI application.GenAI) *EvaluationWithGenAI {
+func NewEvaluationWithGenAI(genAI domain.GenAI) *EvaluationWithGenAI {
 	return &EvaluationWithGenAI{
 		genAI: genAI,
 	}

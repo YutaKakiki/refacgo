@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/kakky/refacgo/internal/application"
+	"github.com/kakky/refacgo/internal/domain"
 	loadfile "github.com/kakky/refacgo/pkg/load_file"
 	"go.uber.org/mock/gomock"
 )
@@ -13,7 +13,7 @@ import (
 func TestEvauationWithGenAI(t *testing.T) {
 	t.Parallel()
 	ctrl := gomock.NewController(t)
-	mockGenAI := application.NewMockGenAI(ctrl)
+	mockGenAI := domain.NewMockGenAI(ctrl)
 	srcArg := []byte("This is sample code.")
 	respString := []string{"This is comments of evalutated code!!!", "This is response from Mock!!!"}
 	type args struct {
