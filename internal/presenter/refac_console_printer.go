@@ -14,6 +14,6 @@ func NewRefacConsolePrinter() *RefacConsolePrinter {
 	}
 }
 
-func (ro *RefacConsolePrinter) Print(text string) {
+func (ro *RefacConsolePrinter) Print(text ...string) {
 
 }
