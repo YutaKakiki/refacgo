@@ -1,0 +1,14 @@
+This is a refactoring of your code.
+And I will state the code and the points I refactored.
+
+```go
+
+package main 
+
+func main(){
+    fmt.Println("Hello,world!")
+}
+
+```
+
+You may want to code with these points in mind.

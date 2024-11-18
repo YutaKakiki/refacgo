@@ -1,0 +1,6 @@
+This is a refactoring of your code.
+And I will state the code and the points I refactored.
+
+
+
+You may want to code with these points in mind.
