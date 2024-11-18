@@ -2,13 +2,16 @@ package evaluation
 
 import (
 	"context"
+	_ "embed"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/kakky/refacgo/internal/domain"
-	loadfile "github.com/kakky/refacgo/pkg/load_file"
 	"go.uber.org/mock/gomock"
 )
+
+//go:embed testdata/prompt/with_genai_prompt.txt
+var expectedPrompt []byte
 
 func TestEvauationWithGenAI(t *testing.T) {
 	t.Parallel()
@@ -32,10 +35,6 @@ func TestEvauationWithGenAI(t *testing.T) {
 				mockGenAI.EXPECT().StreamQueryResults(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Do(
 					func(ctx context.Context, src []byte, prompt string, ch chan<- string) {
 						// 正確にプロンプト・ソースコードをQueryに渡しているか
-						expectedPrompt, err := loadfile.LoadInternal("./testdata/prompt/with_genai_prompt.txt")
-						if err != nil {
-							t.Error(err)
-						}
 						if diff := cmp.Diff(string(expectedPrompt), prompt); diff != "" {
 							t.Errorf("prompt received from EvaluationWithGenAI mismatch (-want +got):\n%s", diff)
 						}

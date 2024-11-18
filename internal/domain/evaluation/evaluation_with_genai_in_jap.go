@@ -2,10 +2,10 @@ package evaluation
 
 import (
 	"context"
+	_ "embed"
 	"fmt"
 
 	"github.com/kakky/refacgo/internal/domain"
-	loadfile "github.com/kakky/refacgo/pkg/load_file"
 )
 
 type EvaluationWithGenAiInJap struct {
@@ -18,15 +18,14 @@ func NewEvaluationWithGenAiInJap(genAI domain.GenAI) *EvaluationWithGenAiInJap {
 	}
 }
 
+//go:embed instruction_text/genai_instruction_in_jap.txt
+var instructionInJap []byte
+
 func (ev *EvaluationWithGenAiInJap) Evaluate(ctx context.Context, src []byte, filename string, ch chan<- string) error {
-	instruction, err := loadfile.LoadInternal("./instruction_text/genai_instruction_in_jap.txt")
-	if err != nil {
-		panic(err)
-	}
-	prompt := fmt.Sprintf("このファイルの名前は%qです。\n\n%v\n\n", filename, string(instruction))
+	prompt := fmt.Sprintf("このファイルの名前は%qです。\n\n%v\n\n", filename, string(instructionInJap))
 
 	go func() error {
-		err = ev.genAI.StreamQueryResults(ctx, src, prompt, ch)
+		err := ev.genAI.StreamQueryResults(ctx, src, prompt, ch)
 		if err != nil {
 			return err
 		}

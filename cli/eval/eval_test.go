@@ -2,15 +2,21 @@ package eval
 
 import (
 	"context"
+	_ "embed"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/kakky/refacgo/internal/domain"
 	"github.com/kakky/refacgo/internal/presenter"
-	loadfile "github.com/kakky/refacgo/pkg/load_file"
 	"github.com/urfave/cli/v2"
 	"go.uber.org/mock/gomock"
 )
+
+//go:embed testdata/prompt/with_genai_prompt.txt
+var expectedPrompt []byte
+
+//go:embed testdata/prompt/with_genai_in_jap_prompt.txt
+var expectedPromptInJap []byte
 
 func TestEvalCmd(t *testing.T) {
 	t.Parallel()
@@ -38,10 +44,6 @@ func TestEvalCmd(t *testing.T) {
 				mockGenAI.EXPECT().StreamQueryResults(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Do(
 					func(ctx context.Context, src []byte, prompt string, ch chan<- string) {
 						// 正確にプロンプト・ソースコードをQueryに渡しているか
-						expectedPrompt, err := loadfile.LoadInternal("./testdata/prompt/eval/with_genai_prompt.txt")
-						if err != nil {
-							t.Error(err)
-						}
 						if diff := cmp.Diff(string(expectedPrompt), prompt); diff != "" {
 							t.Errorf("prompt received from EvaluationWithGenAI mismatch (-want +got):\n%s", diff)
 						}
@@ -73,11 +75,7 @@ func TestEvalCmd(t *testing.T) {
 				mockGenAI.EXPECT().StreamQueryResults(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Do(
 					func(ctx context.Context, src []byte, prompt string, ch chan<- string) {
 						// 正確にプロンプト・ソースコードをQueryに渡しているか
-						expectedPrompt, err := loadfile.LoadInternal("./testdata/prompt/eval/with_genai_in_jap_prompt.txt")
-						if err != nil {
-							t.Error(err)
-						}
-						if diff := cmp.Diff(string(expectedPrompt), prompt); diff != "" {
+						if diff := cmp.Diff(string(expectedPromptInJap), prompt); diff != "" {
 							t.Errorf("prompt received from EvaluationWithGenAI mismatch (-want +got):\n%s", diff)
 						}
 						if diff := cmp.Diff(src, src); diff != "" {
@@ -108,11 +106,7 @@ func TestEvalCmd(t *testing.T) {
 				mockGenAI.EXPECT().StreamQueryResults(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Do(
 					func(ctx context.Context, src []byte, prompt string, ch chan<- string) {
 						// 正確にプロンプト・ソースコードをQueryに渡しているか
-						expectedPrompt, err := loadfile.LoadInternal("./testdata/prompt/eval/with_genai_in_jap_prompt.txt")
-						if err != nil {
-							t.Error(err)
-						}
-						if diff := cmp.Diff(string(expectedPrompt), prompt); diff != "" {
+						if diff := cmp.Diff(string(expectedPromptInJap), prompt); diff != "" {
 							t.Errorf("prompt received from EvaluationWithGenAI mismatch (-want +got):\n%s", diff)
 						}
 						if diff := cmp.Diff(srcArgWithDesc, src); diff != "" {

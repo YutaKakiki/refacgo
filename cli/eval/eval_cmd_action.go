@@ -9,8 +9,8 @@ import (
 	"github.com/kakky/refacgo/internal/domain"
 	"github.com/kakky/refacgo/internal/domain/evaluation"
 	"github.com/kakky/refacgo/internal/presenter"
+	"github.com/kakky/refacgo/pkg/loadfile"
 
-	loadfile "github.com/kakky/refacgo/pkg/load_file"
 	"github.com/urfave/cli/v2"
 )
 
@@ -61,7 +61,7 @@ func (eca *evalCmdAction) run(cCtx *cli.Context, ctx context.Context) error {
 		filename = filename[1 : len(filename)-1]
 	}
 	// 引数のファイルを読み込んで、バイトスライスを格納
-	src, err := loadfile.LoadExternal(filename)
+	src, err := loadfile.LoadFile(filename)
 	if err != nil {
 		return err
 	}
