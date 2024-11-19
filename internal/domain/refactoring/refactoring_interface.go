@@ -5,5 +5,5 @@ import (
 )
 
 type Refactoring interface {
-	Refactor(ctx context.Context, src []byte, filename string) (string, error)
+	Refactor(ctx context.Context, src []byte, filename string, ch chan<- string) error
 }

@@ -1,5 +1,11 @@
 package diff
 
+import (
+	"fmt"
+
+	"github.com/google/go-cmp/cmp"
+)
+
 type CmpDiffer struct{}
 
 func NewCmpDiffer() *CmpDiffer {
@@ -7,5 +13,6 @@ func NewCmpDiffer() *CmpDiffer {
 }
 
 func (CmpDiffer) Diff(originSrc string, refactSrc string) string {
-	return ""
+	diff := cmp.Diff(originSrc, refactSrc)
+	return fmt.Sprintf("the difference is (-orign +refactored):%s", diff)
 }

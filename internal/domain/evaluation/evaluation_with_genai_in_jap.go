@@ -24,13 +24,11 @@ var instructionInJap []byte
 func (ev *EvaluationWithGenAiInJap) Evaluate(ctx context.Context, src []byte, filename string, ch chan<- string) error {
 	prompt := fmt.Sprintf("このファイルの名前は%qです。\n\n%v\n\n", filename, string(instructionInJap))
 
-	go func() error {
-		err := ev.genAI.StreamQueryResults(ctx, src, prompt, ch)
-		if err != nil {
-			return err
-		}
-		return nil
-	}()
+	err := ev.genAI.StreamQueryResults(ctx, src, prompt, ch)
+	if err != nil {
+		return err
+	}
+
 	return nil
 
 }

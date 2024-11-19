@@ -3,6 +3,7 @@ package evaluation
 import (
 	"context"
 	_ "embed"
+	"sync"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -64,7 +65,14 @@ func TestEvauationWithGenAiInJap(t *testing.T) {
 			ctx := context.Background()
 			evaluation := NewEvaluationWithGenAiInJap(mockGenAI)
 			ch := make(chan string)
-			evaluation.Evaluate(ctx, tt.args.src, tt.args.filename, ch)
+			var wg sync.WaitGroup
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				if err := evaluation.Evaluate(ctx, tt.args.src, tt.args.filename, ch); err != nil {
+					t.Error(err)
+				}
+			}()
 			// チャネルから文字列を受信
 			var ss []string
 			for text := range ch {

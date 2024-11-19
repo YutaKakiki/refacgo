@@ -23,12 +23,9 @@ var instruction []byte
 
 func (ev *EvaluationWithGenAI) Evaluate(ctx context.Context, src []byte, filename string, ch chan<- string) error {
 	prompt := fmt.Sprintf("The name of this file is %q.\n\n%v\n\n", filename, string(instruction))
-	go func() error {
-		err := ev.genAI.StreamQueryResults(ctx, src, prompt, ch)
-		if err != nil {
-			return err
-		}
-		return nil
-	}()
+	err := ev.genAI.StreamQueryResults(ctx, src, prompt, ch)
+	if err != nil {
+		return err
+	}
 	return nil
 }
