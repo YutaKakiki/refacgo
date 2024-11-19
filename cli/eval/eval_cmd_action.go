@@ -4,33 +4,37 @@ import (
 	"context"
 	"errors"
 	"strings"
+	"sync"
 
 	"github.com/kakky/refacgo/cli/shared"
 	"github.com/kakky/refacgo/internal/domain"
 	"github.com/kakky/refacgo/internal/domain/evaluation"
 	"github.com/kakky/refacgo/internal/presenter"
+	"github.com/kakky/refacgo/internal/presenter/indicater"
 	"github.com/kakky/refacgo/pkg/loadfile"
 
 	"github.com/urfave/cli/v2"
 )
 
 type evalCmdAction struct {
-	Evalueation   evaluation.Evaluation
-	EvalPresenter presenter.EvalPrinter
+	evalueation evaluation.Evaluation
+	evalPrinter presenter.EvalPrinter
+	indicater   indicater.Indicater
 }
 
 // cmdActionコンストラクタ
-func newEvalCmdAction(evaluation evaluation.Evaluation, evalPresenter presenter.EvalPrinter) *evalCmdAction {
+func newEvalCmdAction(evaluation evaluation.Evaluation, evalPrinter presenter.EvalPrinter, indicater indicater.Indicater) *evalCmdAction {
 	return &evalCmdAction{
-		Evalueation:   evaluation,
-		EvalPresenter: evalPresenter,
+		evalueation: evaluation,
+		evalPrinter: evalPrinter,
+		indicater:   indicater,
 	}
 }
 
 // コマンドアクションを初期化する
 // japaneseフラグがあれば、日本語対応のEvaluationをDIする
-// エントリポイントで初期化したgenAI,evalPresenterもここでDIする
-func initEvalCmdAction(cCtx *cli.Context, genAI domain.GenAI, evalPresenter presenter.EvalPrinter) *evalCmdAction {
+// エントリポイントで初期化したgenAI,evalPrinterもここでDIする
+func initEvalCmdAction(cCtx *cli.Context, genAI domain.GenAI, evalPrinter presenter.EvalPrinter, indicater indicater.Indicater) *evalCmdAction {
 	var evalCmdAction *evalCmdAction
 
 	if cCtx.Bool("japanese") {
@@ -38,20 +42,24 @@ func initEvalCmdAction(cCtx *cli.Context, genAI domain.GenAI, evalPresenter pres
 			evaluation.NewEvaluationWithGenAiInJap(
 				genAI,
 			),
-			evalPresenter,
+			evalPrinter,
+			indicater,
 		)
 	} else {
 		evalCmdAction = newEvalCmdAction(
 			evaluation.NewEvaluationWithGenAI(
 				genAI,
 			),
-			evalPresenter,
+			evalPrinter,
+			indicater,
 		)
 	}
 	return evalCmdAction
 }
 
 func (eca *evalCmdAction) run(cCtx *cli.Context, ctx context.Context) error {
+	eca.indicater.Start()
+
 	if cCtx.NArg() != 1 {
 		return errors.New("only one argument, the filename, is required")
 	}
@@ -73,12 +81,20 @@ func (eca *evalCmdAction) run(cCtx *cli.Context, ctx context.Context) error {
 	ch := make(chan string)
 	// ビジネスロジック
 	// 結果をストリームでチャネルに送信する
-	err = eca.Evalueation.Evaluate(ctx, src, filename, ch)
-	if err != nil {
-		return err
-	}
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() error {
+		defer wg.Done()
+		err = eca.evalueation.Evaluate(ctx, src, filename, ch)
+		if err != nil {
+			return err
+		}
+		return nil
+	}()
+	<-ch
+	eca.indicater.Stop()
 	// チャネルからストリームで受信する
-	eca.EvalPresenter.Print(ctx, ch)
-
+	eca.evalPrinter.Print(ctx, ch)
+	wg.Wait()
 	return nil
 }

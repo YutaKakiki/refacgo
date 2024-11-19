@@ -5,11 +5,12 @@ import (
 
 	"github.com/kakky/refacgo/internal/domain"
 	"github.com/kakky/refacgo/internal/presenter"
+	"github.com/kakky/refacgo/internal/presenter/indicater"
 
 	"github.com/urfave/cli/v2"
 )
 
-func EvalCmd(ctx context.Context, genAI domain.GenAI, evalPresenter presenter.EvalPrinter) *cli.Command {
+func EvalCmd(ctx context.Context, genAI domain.GenAI, evalPresenter presenter.EvalPrinter, indicater indicater.Indicater) *cli.Command {
 	return &cli.Command{
 		Name:        "evaluate",
 		Aliases:     []string{"eval"},
@@ -31,7 +32,7 @@ func EvalCmd(ctx context.Context, genAI domain.GenAI, evalPresenter presenter.Ev
 			},
 		},
 		Action: func(cCtx *cli.Context) error {
-			evalCmdAction := initEvalCmdAction(cCtx, genAI, evalPresenter)
+			evalCmdAction := initEvalCmdAction(cCtx, genAI, evalPresenter, indicater)
 			if err := evalCmdAction.run(cCtx, ctx); err != nil {
 				return err
 			}
