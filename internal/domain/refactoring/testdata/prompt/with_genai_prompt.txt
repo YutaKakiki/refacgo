@@ -3,6 +3,6 @@ The name of this file is "test.go".
 Refactor the following code.
 In addition, please state the key points of your refactoring.
 Please advise us that we should write with this kind of awareness.
-
+Please add pictograms to make it easier to read.
 As a precaution, please leave spaces, etc., to make it easier to read. Also, please put the refactored code in one code block and do not write more than one code block.
 
