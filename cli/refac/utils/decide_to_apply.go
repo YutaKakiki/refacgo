@@ -3,14 +3,14 @@ package utils
 import (
 	"bufio"
 	"fmt"
-	"os"
+	"io"
 )
 
-func DecideToApply() bool {
+func DecideToApply(r io.Reader) bool {
 	fmt.Println("Do you want to apply this refactored code?")
 	for {
 		fmt.Print("(y/n):")
-		scanner := bufio.NewScanner(os.Stdin)
+		scanner := bufio.NewScanner(r)
 		scanner.Scan()
 		reply := scanner.Text()
 		switch reply {

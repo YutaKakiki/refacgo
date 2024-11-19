@@ -3,6 +3,7 @@ package refac
 import (
 	"context"
 	"errors"
+	"os"
 	"strings"
 	"sync"
 
@@ -43,14 +44,15 @@ func initRefacCmdAction(cCtx *cli.Context, genAI domain.GenAI, differ diff.Diffe
 	// -jフラグによってRefacotringインスタンスを切り替える
 	// ここでcmdActionを初期化する
 	if cCtx.Bool("japanese") {
-		// refacCmdAction = newRefacCmdAction(
-		// 	refactoring.NewRefactoringWithGenAiInJap(
-		// 		genAI,
-		// 	),
-		// 	diff.NewCmpDiffer(),
-		// 	refacPrinter,
-		// 	refacOverWiter,
-		// )
+		refacCmdAction = newRefacCmdAction(
+			refactoring.NewRefactoringWithGenAiInJap(
+				genAI,
+			),
+			diff.NewCmpDiffer(),
+			refacPrinter,
+			refacOverWiter,
+			indicater,
+		)
 	} else {
 		refacCmdAction = newRefacCmdAction(
 			refactoring.NewRefactoringWithGenAI(
@@ -114,7 +116,7 @@ func (rca *refacCmdAction) run(cCtx *cli.Context, ctx context.Context) error {
 	// ヘッダーコメントを付加して上書きする
 	rca.refacOverWriter.OverWriteWithHeaderComment(filename, code)
 	// 上書きを確定するかどうか
-	if utils.DecideToApply() {
+	if utils.DecideToApply(os.Stdin) {
 		rca.refacOverWriter.OverWrite(filename, code)
 	} else {
 		rca.refacOverWriter.OverWrite(filename, string(originSrc))
