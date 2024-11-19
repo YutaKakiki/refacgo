@@ -1,19 +1,18 @@
 package presenter
 
 import (
-	"github.com/kakky/refacgo/internal/presenter/indicater"
+	"fmt"
 )
 
 type RefacConsolePrinter struct {
-	inidicater *indicater.Indicater
 }
 
 func NewRefacConsolePrinter() *RefacConsolePrinter {
-	return &RefacConsolePrinter{
-		inidicater: indicater.NewIndicater(),
-	}
+	return &RefacConsolePrinter{}
 }
 
 func (ro *RefacConsolePrinter) Print(text ...string) {
-
+	for _, t := range text {
+		fmt.Println(t)
+	}
 }

@@ -1,8 +1,6 @@
 package presenter
 
-import "io"
-
 type RefacOverWriter interface {
-	OverWrite(w io.Writer, src string)
-	OverWriteWithHeaderComment(w io.Writer, src string)
+	OverWrite(filename string, src string) error
+	OverWriteWithHeaderComment(filename string, src string) error
 }
