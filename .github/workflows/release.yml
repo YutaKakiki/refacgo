@@ -11,6 +11,9 @@ jobs:
     permissions:
       contents: write # これがないとリリースを作成できない
     steps:
+      - name: Install dependencies
+        run: |
+            go install github.com/golang/mock/mockgen@latest
       # チェックアウト
       - uses: actions/checkout@v3
         with:
