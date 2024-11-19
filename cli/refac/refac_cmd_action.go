@@ -7,14 +7,14 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/kakky/refacgo/cli/refac/utils"
-	"github.com/kakky/refacgo/cli/shared"
-	"github.com/kakky/refacgo/internal/domain"
-	"github.com/kakky/refacgo/internal/domain/refactoring"
-	"github.com/kakky/refacgo/internal/domain/refactoring/diff"
-	"github.com/kakky/refacgo/internal/presenter"
-	"github.com/kakky/refacgo/internal/presenter/indicater"
-	"github.com/kakky/refacgo/pkg/loadfile"
+	"github.com/kakkky/refacgo/cli/refac/utils"
+	"github.com/kakkky/refacgo/cli/shared"
+	"github.com/kakkky/refacgo/internal/domain"
+	"github.com/kakkky/refacgo/internal/domain/refactoring"
+	"github.com/kakkky/refacgo/internal/domain/refactoring/diff"
+	"github.com/kakkky/refacgo/internal/presenter"
+	"github.com/kakkky/refacgo/internal/presenter/indicater"
+	"github.com/kakkky/refacgo/pkg/loadfile"
 	"github.com/urfave/cli/v2"
 )
 

@@ -4,8 +4,8 @@ import (
 	"context"
 	"log"
 
-	"github.com/kakky/refacgo/cli"
-	"github.com/kakky/refacgo/internal/config"
+	"github.com/kakkky/refacgo/cli"
+	"github.com/kakkky/refacgo/internal/config"
 )
 
 func main() {

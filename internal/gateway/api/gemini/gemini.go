@@ -6,7 +6,7 @@ import (
 	"log"
 
 	"github.com/google/generative-ai-go/genai"
-	"github.com/kakky/refacgo/internal/config"
+	"github.com/kakkky/refacgo/internal/config"
 	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 )

@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/kakky/refacgo/internal/domain"
+	"github.com/kakkky/refacgo/internal/domain"
 	gomock "go.uber.org/mock/gomock"
 )
 

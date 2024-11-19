@@ -5,7 +5,7 @@ import (
 	_ "embed"
 	"fmt"
 
-	"github.com/kakky/refacgo/internal/domain"
+	"github.com/kakkky/refacgo/internal/domain"
 )
 
 type RefactoringWithGenAiInJap struct {

@@ -4,13 +4,13 @@ import (
 	"context"
 	"os"
 
-	"github.com/kakky/refacgo/cli/eval"
-	"github.com/kakky/refacgo/cli/refac"
-	"github.com/kakky/refacgo/internal/config"
-	"github.com/kakky/refacgo/internal/domain/refactoring/diff"
-	"github.com/kakky/refacgo/internal/gateway/api/gemini"
-	"github.com/kakky/refacgo/internal/presenter"
-	"github.com/kakky/refacgo/internal/presenter/indicater"
+	"github.com/kakkky/refacgo/cli/eval"
+	"github.com/kakkky/refacgo/cli/refac"
+	"github.com/kakkky/refacgo/internal/config"
+	"github.com/kakkky/refacgo/internal/domain/refactoring/diff"
+	"github.com/kakkky/refacgo/internal/gateway/api/gemini"
+	"github.com/kakkky/refacgo/internal/presenter"
+	"github.com/kakkky/refacgo/internal/presenter/indicater"
 	"github.com/urfave/cli/v2"
 )
 
