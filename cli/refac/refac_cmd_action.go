@@ -48,7 +48,7 @@ func initRefacCmdAction(cCtx *cli.Context, genAI domain.GenAI, differ diff.Diffe
 			refactoring.NewRefactoringWithGenAiInJap(
 				genAI,
 			),
-			diff.NewCmpDiffer(),
+			differ,
 			refacPrinter,
 			refacOverWiter,
 			indicater,

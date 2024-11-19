@@ -15,16 +15,17 @@ import (
 )
 
 const (
-	version = "v1.0"
+	version = "v0.1.0"
 )
 
 func Execute(ctx context.Context, cfg *config.Config) error {
 	// geminiを初期化
 	gemini := gemini.NewGemini(cfg.GeminiConfig, ctx)
 	app := &cli.App{
-		Name:        "refacgo",
-		Version:     version,
-		Description: "A Go-based command-line tool that evaluates the code in a specified Go file and provides refactoring suggestions powered by AI",
+		Name:                 "refacgo",
+		Version:              version,
+		Description:          "A Go-based command-line tool that evaluates the code in a specified Go file and provides refactoring suggestions powered by AI",
+		EnableBashCompletion: true,
 		Commands: []*cli.Command{
 			eval.EvalCmd(ctx, gemini, presenter.NewEvalConsolePrinter(), indicater.NewEvalSpinner()),
 			refac.RefacCmd(ctx, gemini, diff.NewCmpDiffer(), presenter.NewRefacConsolePrinter(), presenter.NewRefacFileOverWriter(), indicater.NewRefacSpinner()),

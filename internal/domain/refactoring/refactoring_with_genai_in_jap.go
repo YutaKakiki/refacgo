@@ -22,7 +22,6 @@ func NewRefactoringWithGenAiInJap(genAI domain.GenAI) *RefactoringWithGenAiInJap
 var instructionInJap string
 
 func (rf *RefactoringWithGenAiInJap) Refactor(ctx context.Context, src []byte, filename string, ch chan<- string) error {
-	fmt.Println(instructionInJap)
 	prompt := fmt.Sprintf("このファイル名は %q です。\n\n%v\n\n", filename, instructionInJap)
 	if err := rf.genAI.QueryResuluts(ctx, src, prompt, ch); err != nil {
 		return err
