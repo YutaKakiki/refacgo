@@ -1,4 +1,4 @@
-module github.com/kakky/refacgo
+module github.com/kakkky/refacgo
 
 go 1.23.1
 
