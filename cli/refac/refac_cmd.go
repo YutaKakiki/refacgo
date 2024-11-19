@@ -6,10 +6,12 @@ import (
 	"github.com/kakky/refacgo/internal/domain"
 	"github.com/kakky/refacgo/internal/domain/refactoring/diff"
 	"github.com/kakky/refacgo/internal/presenter"
+	"github.com/kakky/refacgo/internal/presenter/indicater"
 	"github.com/urfave/cli/v2"
 )
 
-func RefacCmd(ctx context.Context, genAI domain.GenAI, differ diff.Differ, refacPrinter presenter.RefacPrinter, refacOverWiter presenter.RefacOverWriter) *cli.Command {
+func RefacCmd(ctx context.Context, genAI domain.GenAI, differ diff.Differ, refacPrinter presenter.RefacPrinter,
+	refacOverWiter presenter.RefacOverWriter, indicater indicater.Indicater) *cli.Command {
 	return &cli.Command{
 		Name:        "refactor",
 		Aliases:     []string{"refac"},
@@ -31,7 +33,7 @@ func RefacCmd(ctx context.Context, genAI domain.GenAI, differ diff.Differ, refac
 			},
 		},
 		Action: func(cCtx *cli.Context) error {
-			refacCmdAction := initRefacCmdAction(cCtx, genAI, differ, refacPrinter, refacOverWiter)
+			refacCmdAction := initRefacCmdAction(cCtx, genAI, differ, refacPrinter, refacOverWiter, indicater)
 			if err := refacCmdAction.run(cCtx, ctx); err != nil {
 				return err
 			}

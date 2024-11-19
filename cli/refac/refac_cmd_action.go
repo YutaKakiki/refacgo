@@ -3,8 +3,8 @@ package refac
 import (
 	"context"
 	"errors"
-	"os"
 	"strings"
+	"sync"
 
 	"github.com/kakky/refacgo/cli/refac/utils"
 	"github.com/kakky/refacgo/cli/shared"
@@ -12,6 +12,7 @@ import (
 	"github.com/kakky/refacgo/internal/domain/refactoring"
 	"github.com/kakky/refacgo/internal/domain/refactoring/diff"
 	"github.com/kakky/refacgo/internal/presenter"
+	"github.com/kakky/refacgo/internal/presenter/indicater"
 	"github.com/kakky/refacgo/pkg/loadfile"
 	"github.com/urfave/cli/v2"
 )
@@ -21,18 +22,22 @@ type refacCmdAction struct {
 	differ          diff.Differ
 	refacPrinter    presenter.RefacPrinter
 	refacOverWriter presenter.RefacOverWriter
+	indicater       indicater.Indicater
 }
 
-func newRefacCmdAction(refactoring refactoring.Refactoring, differ diff.Differ, refacPrinter presenter.RefacPrinter, refacOverWiter presenter.RefacOverWriter) *refacCmdAction {
+func newRefacCmdAction(refactoring refactoring.Refactoring, differ diff.Differ, refacPrinter presenter.RefacPrinter,
+	refacOverWiter presenter.RefacOverWriter, indicater indicater.Indicater) *refacCmdAction {
 	return &refacCmdAction{
 		refactoring:     refactoring,
 		differ:          differ,
 		refacPrinter:    refacPrinter,
 		refacOverWriter: refacOverWiter,
+		indicater:       indicater,
 	}
 }
 
-func initRefacCmdAction(cCtx *cli.Context, genAI domain.GenAI, differ diff.Differ, refacPrinter presenter.RefacPrinter, refacOverWiter presenter.RefacOverWriter) *refacCmdAction {
+func initRefacCmdAction(cCtx *cli.Context, genAI domain.GenAI, differ diff.Differ, refacPrinter presenter.RefacPrinter,
+	refacOverWiter presenter.RefacOverWriter, indicater indicater.Indicater) *refacCmdAction {
 	var refacCmdAction *refacCmdAction
 
 	// -jフラグによってRefacotringインスタンスを切り替える
@@ -54,12 +59,15 @@ func initRefacCmdAction(cCtx *cli.Context, genAI domain.GenAI, differ diff.Diffe
 			differ,
 			refacPrinter,
 			refacOverWiter,
+			indicater,
 		)
 	}
 	return refacCmdAction
 }
 
 func (rca *refacCmdAction) run(cCtx *cli.Context, ctx context.Context) error {
+	// インジケータースピナを回す
+	rca.indicater.Start()
 	if cCtx.NArg() != 1 {
 		return errors.New("only one argument, the filename, is required")
 	}
@@ -75,10 +83,21 @@ func (rca *refacCmdAction) run(cCtx *cli.Context, ctx context.Context) error {
 	// descフラグから文字列を取得し、ソースコードに追加
 	desc := cCtx.String("description")
 	originSrcWithDesc := shared.AddDescToSrc(originSrc, desc)
+
 	// リファクタリングする
-	result, err := rca.refactoring.Refactor(ctx, originSrcWithDesc, filename)
-	if err != nil {
-		return err
+	ch := make(chan string)
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() error {
+		defer wg.Done()
+		if err := rca.refactoring.Refactor(ctx, originSrcWithDesc, filename, ch); err != nil {
+			return err
+		}
+		return nil
+	}()
+	var result string
+	for s := range ch {
+		result += s
 	}
 	// リファクタリング結果をテキスト/コードに分ける
 	code, text, err := utils.DevideCodeAndText(result)
@@ -87,22 +106,19 @@ func (rca *refacCmdAction) run(cCtx *cli.Context, ctx context.Context) error {
 	}
 	// 差分を検出
 	diff := rca.differ.Diff(string(originSrc), code)
-	// ファイル元を書き込み権限で開く
-	f, err := os.Create(filename)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-	// ファイルへの上書き
-	// ヘッダーコメントを付加して上書きする
-	rca.refacOverWriter.OverWriteWithHeaderComment(f, code)
+	// インジケータースピナーを止める
+	rca.indicater.Stop()
 	// テキスト・差分を表示
 	rca.refacPrinter.Print(text, diff)
+	// ファイルへの上書き
+	// ヘッダーコメントを付加して上書きする
+	rca.refacOverWriter.OverWriteWithHeaderComment(filename, code)
 	// 上書きを確定するかどうか
 	if utils.DecideToApply() {
-		rca.refacOverWriter.OverWrite(f, code)
+		rca.refacOverWriter.OverWrite(filename, code)
 	} else {
-		rca.refacOverWriter.OverWrite(f, string(originSrc))
+		rca.refacOverWriter.OverWrite(filename, string(originSrc))
 	}
+	wg.Wait()
 	return nil
 }
