@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Install dependencies
         run: |
-            go install github.com/golang/mock/mockgen@latest
+           go install go.uber.org/mock/mockgen@latest
       # チェックアウト
       - uses: actions/checkout@v3
         with:
