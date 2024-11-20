@@ -1,9 +1,13 @@
 # refacgo
+[![release](https://github.com/kakkky/refacgo/actions/workflows/release.yml/badge.svg)](https://github.com/kakkky/refacgo/actions/workflows/release.yml)
+![Test Coverage](https://img.shields.io/codecov/c/github/OWNER/REPOSITORY)
+[![Test CLI](https://github.com/kakkky/refacgo/actions/workflows/test.yml/badge.svg)](https://github.com/kakkky/refacgo/actions/workflows/test.yml)
+
 A Go-based command-line tool that evaluates the code in a specified Go file and provides refactoring suggestions powered by AI.
 
 ## Installation
 ```shell
-$ go install github.com/kakkky/refacgo
+$ go install github.com/kakkky/refacgo@latest
 ```
 
 ### Setup
